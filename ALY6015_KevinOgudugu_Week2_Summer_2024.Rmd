@@ -1,0 +1,778 @@
+---
+title: "ALY6015 Module 2: Chi-Square Testing and ANOVA"
+author: Kevin Ogudugu
+date: 07/20/24
+output:
+  html_document: default
+  pdf_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.cap = TRUE)
+```
+
+This paper is a presentation of various solutions to a variety of problems incorporating methods such as Chi-Square Test, ANOVA, and two-way ANOVA Testing in Module 2 for ALY6015. Each question follows the conventional steps in testing hypotheses which include stating hypotheses, finding critical values, computing test values, making decisions and summarizing results.
+
+# Task 1 (Section 11-1 6. Blood Types)
+
+**Part A - State the Hypothesis and identify the claim**
+
+-   H0: The hospital patients in a large hospital have the same blood type distribution as those in the general population.
+-   H1: The hospital patients in a large hospital do not have the same blood type distribution as those in the general population.
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.10
+```
+
+**Part C - Compute the test values**
+
+**Vector for the observed values**
+
+```{r}
+observed <- c(12, 8, 24, 6)
+```
+
+**Vector for the probabilities**
+
+```{r}
+p <- c(0.20, 0.28, 0.36, 0.16)
+```
+
+**Running Chi-squared test and record the result**
+
+```{r}
+result <- chisq.test(x = observed, p = p)
+```
+
+**P-value and test statistic**
+
+```{r}
+result$p.value # Chi-square p-value 
+result$statistic # Chi-square test value 
+result$parameter # Df
+```
+
+**Part D - Make the decision**
+
+```{r}
+ifelse(result$p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+```
+
+**Part E - Summarize the results** 
+We fail to reject the null hypothesis at the 0.10 significance level. Hence, there is not enough evidence to claim that the distribution of blood types among the general population is different from the hospital group.
+
+# Task 2 (Section 11-1. 8. On-Time Performance by Airlines)
+
+**Part A - State the hypotheses and identify the claim** 
+- H0: The on-time performance distribution by the airlines is the same as the government´s statistics - H1: The on-time performance distribution differ from the government's statistics.
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.05
+```
+
+**Part C - Compute the test values**
+
+**Vector for the observed values**
+
+```{r}
+observed <- c(125, 40, 10, 25)
+```
+
+**Vector for the probabilities**
+
+```{r}
+p <- c(0.708, 0.082, 0.09, 0.12)
+```
+
+**Running Chi-squared test and record the result**
+
+```{r}
+result <- chisq.test(x = observed, p = p)
+```
+
+**P-value and test statistic**
+
+```{r}
+result$p.value # Chi-square p-value 
+result$statistic # Chi-square test value  
+result$parameter # Df
+```
+
+**Part D - Make the decision**
+
+```{r}
+ifelse(result$p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+```
+
+**Part E - Summarize the results** 
+We reject the null hypothesis at the 0.05 significance level. Hence, there is enough evidence to claim that the distribution of on-time performance differs from the government's statistics.
+
+**Datasource:**www.transtats.bts.gov
+
+# Task 3 (Section 11-2.8. Ethnicity and Movie Admissions)
+
+**Part A - State the hypotheses and identify the claim**
+
+-   H0: Movie attendance by year is independent on ethnicity
+-   H1: Movie attendance by year is dependent on ethnicity
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.05
+```
+
+**Part C - Compute the test values**
+
+**Row values**
+
+```{r}
+r1 <- c(724, 335, 174, 107) 
+r2 <- c(370, 292, 152, 140)
+```
+
+**Number of rows**
+
+```{r}
+rows = 2
+```
+
+**Matrix for the rows**
+
+```{r}
+mtrx = matrix(c(r1, r2), nrow = rows, byrow = TRUE)
+```
+
+**Naming rows**
+
+```{r}
+rownames(mtrx) = c("2013", "2014") 
+colnames(mtrx) = c("Caucasian", "Hispanic", "African American", "Other")
+```
+
+**Run the test and record results**
+
+```{r}
+result <- chisq.test(mtrx) 
+result
+```
+
+**View the p-value and test statistic**
+
+```{r}
+result$p.value # Chi-square p-value 
+result$statistic # Chi-square test value
+result$parameter # Df
+```
+
+**Part D - Make the decision**
+
+```{r}
+ifelse(result$p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+```
+
+**Part E - Summarize the results** 
+We reject the null hypothesis at the 0.05 significance level. Hence, there is enough evidence to claim that movie attendance by year depends on ethnicity.
+
+**Datasource:**MPAA Study
+
+# Task 4 (Section 11-2.10 Women in the Military)
+
+**Part A - State the hypotheses and identify the claim** 
+- H0: No relationship exists between rank and branch of the Armed Forces. 
+- H1: There is a relationship between rank and branch of the Armed Forces.
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.05
+```
+
+**Part C - Compute the test values**
+
+**Rows values**
+
+```{r}
+r1 <- c(10791, 62491) 
+r2 <- c(7816, 42750)
+r3 <- c(932, 9525) 
+r4 <- c(11819, 54344)
+```
+
+**number of rows**
+
+```{r}
+rows = 4
+```
+
+**Matrix for the rows**
+
+```{r}
+mtrx = matrix(c(r1, r2, r3, r4), nrow = rows, byrow = TRUE)
+```
+
+**Naming rows**
+
+```{r}
+rownames(mtrx) = c("Army", "Navy", "Marine Corps", "Air Force") 
+colnames(mtrx) = c("Officers", "Enlisted")
+```
+
+**Run the test and record results**
+
+```{r}
+result <- chisq.test(mtrx) 
+result
+```
+
+**View the p-value and test statistic**
+
+```{r}
+result$p.value # Chi-square p-value 
+result$statistic # Chi-square test value
+result$parameter # Df
+```
+
+**Part D - Make the decision**
+
+```{r}
+ifelse(result$p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+```
+
+**Part E - Summarize the results** 
+We reject the null hypothesis at the 0.05 significance level. Hence, there is enough evidence to claim that a relationship exists between rank and branch of the Armed Forces.
+
+**Datasource:**New York Times Almanac.
+
+# Task 5 (Section 12-1.8 Sodium Contents of Foods)
+
+**Part A - State the hypotheses and identify the claim** 
+- H0: μ1 = μ2 = μ3 
+- H1: At least one mean is different from the others
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.05
+```
+
+**Part C - Compute the test values**
+
+**Create data frames for condiments, cereals, and desserts**
+
+```{r}
+condiments <- data.frame('sodium' = c(270, 130, 230, 180, 80, 70, 200), 'food' = rep('condiments', 7), stringsAsFactors = FALSE)
+cereals <- data.frame('sodium' = c(260, 220, 290, 290, 200, 320, 140), 'food' = rep('cereals', 7), stringsAsFactors = FALSE)
+desserts <- data.frame('sodium' = c(100, 180, 250, 250, 300, 360, 300, 160), 'food' = rep('desserts', 8), stringsAsFactors = FALSE)
+```
+
+**Combine the data frames into one**
+
+```{r}
+sodium <- rbind(condiments, cereals, desserts)
+sodium$food <- as.factor(sodium$food)
+```
+
+**Run the ANOVA test**
+
+```{r}
+anova <- aov(sodium ~ food, data = sodium)
+```
+
+**View the model summary**
+
+```{r}
+summary(anova)
+```
+
+**Save summary to an object**
+
+```{r}
+a_summary <- summary(anova)
+```
+
+**Degrees of freedom** **k - 1: between group variance - numerator**
+
+```{r}
+df.numerator <- a_summary[[1]][1, "Df"]
+df.numerator
+```
+
+**N - k: within group variance - denominator**
+
+```{r}
+df.denominator <- a_summary[[1]][2, "Df"]
+df.denominator
+```
+
+**Extract the F test value from the summary**
+
+```{r}
+F.value <- a_summary[[1]][1, "F value"]
+F.value
+```
+
+**Extract the p-value from the summary**
+
+```{r}
+p.value <- a_summary[[1]][1, "Pr(>F)"]
+p.value
+```
+
+**Part D - Make the decision**
+
+```{r}
+decision <- ifelse(p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+decision
+```
+
+**Part E - Summarize the results** 
+We fail to reject the null hypothesis at the 0.05 significance level. Hence, there is not sufficient evidence to claim that a difference in mean sodium amounts exists among condiments, cereals, and desserts.
+
+**Datasource:**The Doctor’s Pocket Calorie, Fat, and Carbohydrate Counter.
+
+# Task 6 (Section 12-2.10 Sales for Leading Companies)
+
+**Part A - State the hypotheses and identify the claim** 
+- H0: μ1 = μ2 = μ3 
+- H1: At least one mean is different from the others
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.01
+```
+
+**Part C - Compute the test values**
+
+**Create data frames for condiments, cereals, and desserts**
+
+```{r}
+cereal <- data.frame('sales' = c(578, 320, 264, 249, 237), 'category' = rep('cereal', 5), stringsAsFactors = FALSE)
+chocolate_candy <- data.frame('sales' = c(311, 106, 109, 125, 173), 'category' = rep('chocolate_candy', 5), stringsAsFactors = FALSE)
+coffee <- data.frame('sales' = c(261, 185, 302, 689), 'category' = rep('coffee', 4), stringsAsFactors = FALSE)
+```
+
+**Combine the data frames into one**
+
+```{r}
+sales <- rbind(cereal, chocolate_candy, coffee)
+sales$category <- as.factor(sales$category)
+```
+
+**Run the ANOVA test**
+
+```{r}
+anova <- aov(sales ~ category, data = sales)
+```
+
+**View the model summary**
+
+```{r}
+summary(anova)
+```
+
+**Save summary to an object**
+
+```{r}
+a_summary <- summary(anova)
+```
+
+**Degrees of freedom** **k - 1: between group variance - numerator**
+
+```{r}
+df.numerator <- a_summary[[1]][1, "Df"]
+df.numerator
+```
+
+**N - k: within group variance - denominator**
+
+```{r}
+df.denominator <- a_summary[[1]][2, "Df"]
+df.denominator
+```
+
+**Extract the F test value from the summary**
+
+```{r}
+F.value <- a_summary[[1]][1, "F value"]
+F.value
+```
+
+**Extract the p-value from the summary**
+
+```{r}
+p.value <- a_summary[[1]][1, "Pr(>F)"]
+p.value
+```
+
+**Part D - Make the decision**
+
+```{r}
+decision <- ifelse(p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+decision
+```
+
+**Part E - Summarize the results** We fail to reject the null hypothesis at the 0.01 significance level. Hence, there is not sufficient evidence to claim that a significant difference in mean of sales for leading companies.
+
+**Datasource:**Information Resources, Inc. 
+
+# Task 7 (Section 12-2.12 Per-Pupil Expenditures)
+
+**Part A - State the hypotheses and identify the claim** 
+- H0: μ1 = μ2 = μ3 
+- H1: At least one mean is different from the others
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.05
+```
+
+**Part C - Compute the test values**
+
+**Create data frames for condiments, cereals, and desserts**
+
+```{r}
+eastern <- data.frame('expenditure' = c(4946, 5953, 6202, 7243, 6113), 'region' = rep('eastern', 5), stringsAsFactors = FALSE)
+middle <- data.frame('expenditure' = c(6149, 7451, 6000, 6479), 'region' = rep('middle', 4), stringsAsFactors = FALSE)
+western <- data.frame('expenditure' = c(5282, 8605, 6528, 6911), 'region' = rep('western', 4), stringsAsFactors = FALSE)
+```
+
+**Combine the data frames into one**
+
+```{r}
+expenditures <- rbind(eastern, middle, western)
+expenditures$region <- as.factor(expenditures$region)
+```
+
+**Run the ANOVA test**
+
+```{r}
+anova <- aov(expenditure ~ region, data = expenditures)
+```
+
+**View the model summary**
+
+```{r}
+summary(anova)
+```
+
+**Save summary to an object**
+
+```{r}
+a_summary <- summary(anova)
+```
+
+**Degrees of freedom** **k - 1: between group variance - numerator**
+
+```{r}
+df.numerator <- a_summary[[1]][1, "Df"]
+df.numerator
+```
+
+**N - k: within group variance - denominator**
+
+```{r}
+df.denominator <- a_summary[[1]][2, "Df"]
+df.denominator
+```
+
+**Extract the F test value from the summary**
+
+```{r}
+F.value <- a_summary[[1]][1, "F value"]
+F.value
+```
+
+**Extract the p-value from the summary**
+
+```{r}
+p.value <- a_summary[[1]][1, "Pr(>F)"]
+p.value
+```
+
+**Part D - Make the decision**
+
+```{r}
+decision <- ifelse(p.value > alpha, "Fail to reject the null hypothesis", "Reject the null hypothesis")
+decision
+```
+
+**Part E - Summarize the results** 
+We fail to reject the null hypothesis at the 0.01 significance level. Hence, there is not sufficient evidence to claim that a significant difference in mean of expenditures per pupil for states in the three sections of the country.
+
+**Datasource:**New York Times Almanac. 
+
+# Task 8 (Section 12- 3. 10. Increasing Plant Growth)
+
+**Part A - State the hypothesis and find the claim** - H0_0: The means of the different light groups are equal - H0_1: The means of the different light groups are different.
+
+-   H0_0: The means of the different plant food groups are equal.
+
+-   H0_1: The means of the different plant food groups are different.
+
+-   H0_0: There is no interaction between light and plant food.
+
+-   H0_1: There is interaction between light and plant food.
+
+**Part B - Find the critical value**
+
+```{r}
+alpha <- 0.05
+```
+
+**Part C - Compute the test values**
+
+**Create data frames for growth, light, and food**
+
+```{r}
+data <- data.frame(
+  growth = c(9.2, 9.4, 8.9, 8.5, 9.2, 8.9, 7.1, 7.2, 8.5, 5.5, 5.8, 7.6),
+  light = rep(c("Grow-light 1", "Grow-light 2"), each = 6),
+  food = rep(c("Plant food A", "Plant food B"), each = 3, times = 2)
+)
+```
+
+**Run the two-way ANOVA test**
+
+```{r}
+anova <- aov(growth ~ light * food, data = data)
+```
+
+**View the model summary**
+
+```{r}
+summary(anova)
+```
+
+**Save summary to an object**
+
+```{r}
+a_summary <- summary(anova)
+```
+
+**Extract the F test values from the summary**
+
+```{r}
+F.value_light <- a_summary[[1]]["light", "F value"]
+F.value_food <- a_summary[[1]]["food", "F value"]
+F.value_interaction <- a_summary[[1]]["light:food", "F value"]
+```
+
+**Extract the p-values from the summary**
+
+```{r}
+p.value_light <- a_summary[[1]]["light", "Pr(>F)"]
+p.value_food <- a_summary[[1]]["food", "Pr(>F)"]
+p.value_interaction <- a_summary[[1]]["light:food", "Pr(>F)"]
+```
+
+**Determine the degrees of freedom**
+
+```{r}
+dfn_light <- a_summary[[1]]["light", "Df"]
+dfn_food <- a_summary[[1]]["food", "Df"]
+dfn_interaction <- a_summary[[1]]["light:food", "Df"]
+dfd <- a_summary[[1]]["Residuals", "Df"]
+```
+
+**Find the critical F-values**
+
+```{r}
+critical_value_light <- qf(1 - alpha, dfn_light, dfd)
+critical_value_food <- qf(1 - alpha, dfn_food, dfd)
+critical_value_interaction <- qf(1 - alpha, dfn_interaction, dfd)
+```
+
+**Part D - Make the decision**
+
+```{r}
+dec_light <- ifelse(!is.na(p.value_light) && p.value_light < alpha, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+dec_food <- ifelse(!is.na(p.value_food) && p.value_food < alpha, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+dec_interaction <- ifelse(!is.na(p.value_interaction) && p.value_interaction < alpha, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+```
+
+**Part E - Summarization of Result and interaction plot**
+
+```{r interaction_plot, fig.cap="Figure 1: Interaction Plot of Light and Plant Food on Growth"}
+interaction.plot(data$light, data$food, data$growth, col = c("red", "blue"), pch = c(19, 17), type = "b", xlab = "Light", ylab = "Growth", main = "Interaction Plot of Light and Plant Food on Growth")
+```
+
+We fail to reject all three null hypotheses at the 0.05 significance level, which means that there is no significant difference in mean growth between the light groups, plant food groups, nor significant interaction between light and plant food on plant growth. The lack of significant interaction is further emphasized by the interaction plot.
+
+# Task 9
+
+**Libraries**
+
+```{r}
+library(dplyr)
+library(tidyverse)
+```
+
+**9.1 - Loading the baseball dataset**
+
+```{r}
+baseball <- read.csv("baseball-3.csv")
+```
+
+**9.2 - EDA on the baseball dataset**
+
+```{r}
+summary(baseball)
+
+sum(is.na(baseball))
+
+baseball$Year <- as.factor(baseball$Year)
+```
+
+The database containing baseball information is composed of 1,232 records. The columns represent various statistics and features for each team in the baseball dataset including Team, League, Year, RS, RA, W, OBP, SLG, BA playoff appearances and season rankings among others. The wins range from 40 to 116 with an average of almost about 80.9 wins each. The minimum and maximum number of runs scored by a team are 463 at the least and 1009 at the most respectively whereas their mean is about 715 on average per year. The allowed runs score between 1103 and 471 while their mean is equal to 715. The OBP ranges between .277-.373 with a mean value of .326, .214-.294 with a mean value of .259 for BA as well as .301-.491 with a mean value of .397 for SLG.
+
+```{r wins_by_year, fig.cap="Figure 2: Distribution of Wins by Year"}
+ggplot(baseball, aes(x = Year, y = W)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Distribution of Wins by Year", x = "Year", y = "Wins")
+```
+
+The bar plot of wins by year shows an increasing trend over the years, with a noticeable increase around the late 1960s and early 2000s, indicating periods of increased team performance. Summing the wins by decade reveals that teams have been relatively more successful in recent decades. The bar plot illustrating the number of wins each year from 1962 to 2012 shows a general upward trend, with more recent years showing a higher number of wins. Grouping wins by decade further confirms that recent decades have seen a higher number of wins compared to earlier ones.
+
+**9.3 - Chi-Square Goodness-of-Fit test**
+
+**State the hypothesis and find the claim**
+
+-   H0: Number of wins is equally distributed across decades
+-   H1: Number of wins is not equally distributed across decades
+
+```{r}
+baseball$Decade <- as.factor(as.numeric(as.character(baseball$Year)) - (as.numeric(as.character(baseball$Year)) %% 10))
+```
+
+**Create a wins table by summing the wins by decade**
+
+```{r}
+wins <- baseball %>%
+  group_by(Decade) %>%
+  summarize(wins = sum(W)) %>%
+  as_tibble()
+```
+
+**Perform Chi-Square Goodness-of-Fit Test**
+
+```{r}
+expected_wins <- sum(wins$wins) / nrow(wins)
+chisq_test <- chisq.test(wins$wins, p = rep(1/nrow(wins), nrow(wins)))
+```
+
+**Extract test statistic and p-value**
+
+```{r}
+test_statistic <- chisq_test$statistic
+p_value <- chisq_test$p.value
+```
+
+**Find the critical value**
+
+```{r}
+critical_value <- qchisq(1 - 0.05, df = nrow(wins) - 1)
+```
+
+**Make the Decision**
+
+```{r}
+decision <- ifelse(test_statistic > critical_value, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+```
+
+We reject the null hypothesis which means that the number of wins is not equally distributed across decades.
+
+**Comparing the critical and test values**
+
+Comparing the critical and test values produces the same result as comparing R's p-value with alpha. In both ways, null hypothesis is accepted if t\>critical value or if p\<alpha. With this in mind, both t-statistics exceed their respective critical values and both have small associated p-values that are less than 0.05 leading to rejection of the null hypothesis.
+
+**9.4 - Import crop dataset**
+
+```{r}
+cropdata <- read.csv("crop_data-3.csv")
+```
+
+**9.5**
+
+**Null and alternate hypothesis**
+
+Fertilizer 
+- H0: The means of the different fertilizer groups are equal. 
+w- H1: The means of the different fertilizer groups are different.
+
+Density 
+- H0: The means of the different density groups are equal. 
+- H1: The means of the different density groups are different.
+
+Interaction
+-   H0: There is no interaction between fertilizer and density.
+-   H1: There is interaction between fertilizer and density.
+
+**Converting the variables density and fertilizer to R factors**
+
+```{r}
+cropdata$density <- as.factor(cropdata$density)
+cropdata$fertilizer <- as.factor(cropdata$fertilizer)
+```
+
+**Running two-way anova**
+
+```{r}
+anova_result <- aov(yield ~ fertilizer * density, data = cropdata)
+
+summary(anova_result)
+
+a_summary <- summary(anova_result)
+```
+
+**Extract the F test values from the summary**
+
+```{r}
+F.value_fertilizer <- a_summary[[1]]["fertilizer", "F value"]
+F.value_density <- a_summary[[1]]["density", "F value"]
+F.value_interaction <- a_summary[[1]]["fertilizer:density", "F value"]
+```
+
+**Extract the p-values from the summary**
+
+```{r}
+p.value_fertilizer <- a_summary[[1]]["fertilizer", "Pr(>F)"]
+p.value_density <- a_summary[[1]]["density", "Pr(>F)"]
+p.value_interaction <- a_summary[[1]]["fertilizer:density", "Pr(>F)"]
+```
+
+**Print extracted values to verify**
+
+```{r}
+p.value_fertilizer
+p.value_density
+p.value_interaction
+```
+
+**Make the decision**
+
+```{r}
+alpha <- 0.05
+dec_fertilizer <- ifelse(!is.na(p.value_fertilizer) && p.value_fertilizer < alpha, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+dec_density <- ifelse(!is.na(p.value_density) && p.value_density < alpha, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+dec_interaction <- ifelse(!is.na(p.value_interaction) && p.value_interaction < alpha, "Reject the null hypothesis", "Fail to reject the null hypothesis")
+```
+
+**Summary of results** 
+We fail to reject the null hypothesis for the effect of fertilizer and the interaction between fertilizer and density on yield, indicating that there is no significant impact of fertilizer on yield and no significant interaction between fertilizer and density. However, we reject the null hypothesis for the effect of density on yield, indicating that there is a significant impact of density on yield.
+
+
+**References:**
+Bureau of Transportation Statistics. (n.d.). Retrieved from http://www.transtats.bts.gov
+
+New York Times Almanac. (n.d.).
+
+The Doctor’s Pocket Calorie, Fat, and Carbohydrate Counter. (n.d.).
+
+Information Resources, Inc. (n.d.).
